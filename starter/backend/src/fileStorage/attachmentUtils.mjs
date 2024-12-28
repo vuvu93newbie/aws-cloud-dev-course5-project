@@ -8,7 +8,7 @@ const bucketName = process.env.TODOS_S3_BUCKET
 const s3Client = AWSXRay.captureAWSv3Client(new S3Client())
 
 export async function generateUploadUrl(todoId) {
-    logger.info(`Getting upload url for ${todoId}`)
+    logger.info(`Generate upload url for ${todoId}`)
 
     try {
         const command = new PutObjectCommand({
@@ -17,7 +17,8 @@ export async function generateUploadUrl(todoId) {
         })
 
         const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3000})
-        logger.info(`Upload succesfully. SignedUrl ${signedUrl}`)
+        logger.info(`SignedUrl created ${signedUrl}`)
+
         return signedUrl
     }
     catch (error) {

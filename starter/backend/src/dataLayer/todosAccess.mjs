@@ -59,7 +59,10 @@ export class TodosAccess {
                     userId,
                     todoId
                 },
-                UpdateExpression: 'set name = :name, dueDate = :dueDate, done = :done',
+                UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
+                ExpressionAttributeNames: {
+                    '#name': 'name',
+                },
                 ExpressionAttributeValues: {
                     ':name': data.name,
                     ':dueDate': data.dueDate,
@@ -94,11 +97,25 @@ export class TodosAccess {
         }
     }
 
-    async generateUploadUrl(todoId) {
+    async generateUploadUrl(userId, todoId) {
         this.logger.info(`Generate image URL for Todo ${todoId}`)
 
         try {
-            return await generateUploadUrl(todoId)
+            var url = await generateUploadUrl(todoId)
+
+            await this.dynamoDbClient.update({
+                TableName: this.todosTable,
+                Key: {
+                    userId,
+                    todoId
+                },
+                UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+                ExpressionAttributeValues: {
+                    ':attachmentUrl':  `https://${process.env.TODOS_S3_BUCKET}.s3.amazonaws.com/${todoId}`
+                }
+            })
+
+            return url
         } catch (error) {
             this.logger.error(`Generate image URL for Todo ${todoId} failed`)
             throw new Error(error.message)

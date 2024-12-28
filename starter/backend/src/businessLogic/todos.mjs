@@ -10,13 +10,11 @@ export async function createTodo(userId, data) {
     logger.info(`Create new todo for userId ${userId}`)
     const todoId = uuid.v4()
     const createdAt = new Date().toISOString()
-    const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
     const todo = {
         userId,
         todoId,
         createdAt,
         done: false,
-        attachmentUrl: attachmentUrl,
         ...data
     }
 
@@ -38,7 +36,7 @@ export async function deleteTodo(userId, todoId) {
     return await todosAccess.deleteTodo(userId, todoId)
 }
 
-export async function generateUploadUrl(todoId) {
+export async function generateUploadUrl(userId, todoId) {
     logger.info(`Generate image url for todo ${todoId}`)
-    return await todosAccess.generateUploadUrl(todoId)
+    return await todosAccess.generateUploadUrl(userId, todoId)
 }
