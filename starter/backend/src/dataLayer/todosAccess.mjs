@@ -24,6 +24,7 @@ export class TodosAccess {
                 Item: todo
             })
             this.logger.info('Create todo successfully')
+            return todo
         } catch (error) {
             this.logger.error(`Create todo failed ${error.message}`)
             throw new Error(error.message)

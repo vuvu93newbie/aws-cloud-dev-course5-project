@@ -91,7 +91,7 @@ export function Todos() {
     try {
       const todo = todos[pos]
       const accessToken = await getAccessTokenSilently({
-        audience: `https://${process.env.REACT_APP_API_ENDPOINT}/api/v2/`,
+        audience: `https://${process.env.REACT_APP_AUTH0_DOMAIN}/api/v2/`,
         scope: 'write:todo'
       })
       await patchTodo(accessToken, todo.todoId, {
